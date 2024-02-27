@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -43,16 +44,27 @@ public class ItemInDisk {
         this.url = url;
     }
 
+    //Преобразование строки в дату.
     public static LocalDateTime convertStringToTime(String str) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
 
         try {
-            LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(str, formatter);
 
-            return dateTime;
+            return zonedDateTime.toLocalDateTime();
         } catch (DateTimeParseException e) {
-            // Handle the exception or rethrow it as needed
             throw new IllegalArgumentException("Invalid datetime format. Please use ISO 8601 format.", e);
+        }
+    }
+
+    //Проверка на валидность даты.
+    public static boolean isValidISO8601(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        try {
+            LocalDateTime parsedDatetime = LocalDateTime.parse(date, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
         }
     }
 
